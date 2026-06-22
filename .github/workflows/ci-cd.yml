@@ -1,0 +1,19 @@
+name: Backup and Patching Pipeline
+
+on:
+  push:
+    paths:
+      - "ansible/inventory/hosts.ini"
+
+jobs:
+  backup-patching:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Run Ansible Playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: ansible/site.yml
+          inventory: ansible/inventory/hosts.ini
