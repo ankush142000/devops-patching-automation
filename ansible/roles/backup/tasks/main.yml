@@ -1,0 +1,12 @@
+- name: Ensure backup directory exists on NFS
+  file:
+    path: /mnt/nfs_share/backups
+    state: directory
+    mode: '0777'
+
+- name: Backup critical directories before patching
+  archive:
+    path:
+      - /etc
+      - /var/log
+    dest: "/mnt/nfs_share/backups/{{ inventory_hostname }}_{{ ansible_date_time.date }}.tar.gz"
