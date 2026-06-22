@@ -1,0 +1,4 @@
+- name: Update all packages (simulate patching)
+  package:
+    name: "*"
+    state: latest
