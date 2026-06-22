@@ -1,4 +1,56 @@
+# --- Pre-Checks ---
+- name: Check disk space before patching
+  command: df -h
+  register: disk_output
+
+- name: Show disk usage
+  debug:
+    var: disk_output.stdout_lines
+
+- name: Check memory before patching
+  command: free -m
+  register: mem_output
+
+- name: Show memory usage
+  debug:
+    var: mem_output.stdout_lines
+
+- name: Check uptime before patching
+  command: uptime
+  register: uptime_output
+
+- name: Show server uptime
+  debug:
+    var: uptime_output.stdout_lines
+
+# --- Patching ---
 - name: Update all packages (simulate patching)
   package:
     name: "*"
     state: latest
+
+# --- Reboot ---
+- name: Reboot the server after patching
+  reboot:
+    msg: "Reboot initiated after patching"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 10
+    post_reboot_delay: 30
+
+# --- Post-Checks ---
+- name: Verify server uptime after reboot
+  command: uptime
+  register: uptime_after
+
+- name: Show server uptime after reboot
+  debug:
+    var: uptime_after.stdout_lines
+
+- name: Verify disk space after patching
+  command: df -h
+  register: disk_after
+
+- name: Show disk usage after patching
+  debug:
+    var: disk_after.stdout_lines
